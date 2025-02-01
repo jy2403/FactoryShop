@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
  * @author Julian andres
  */
 public class editar extends javax.swing.JDialog {
-    FactoryShop bodega = new FactoryShop();
 
     /**
      * Creates new form agregar

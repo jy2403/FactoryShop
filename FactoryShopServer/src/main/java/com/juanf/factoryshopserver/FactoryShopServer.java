@@ -4,6 +4,8 @@
 
 package com.juanf.factoryshopserver;
 
+import com.juanf.factoryshopserver.networkLayer.TCPServer;
+
 /**
  *
  * @author juanf
@@ -11,6 +13,6 @@ package com.juanf.factoryshopserver;
 public class FactoryShopServer {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        new TCPServer().start();
     }
 }
