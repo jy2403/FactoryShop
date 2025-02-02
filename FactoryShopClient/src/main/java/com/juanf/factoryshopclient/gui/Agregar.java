@@ -4,8 +4,8 @@
  */
 package com.juanf.factoryshopclient.gui;
 
-import factory.shop.FactoryShop;
-import factory.shop.Producto;
+import com.juanf.factoryshopclient.gui.FactoryShop;
+import com.juanf.factoryshopclient.gui.Producto;
 import javax.swing.JOptionPane;
 
 /**
