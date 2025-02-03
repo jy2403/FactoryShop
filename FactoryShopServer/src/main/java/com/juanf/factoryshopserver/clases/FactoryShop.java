@@ -4,39 +4,44 @@
  */
 package com.juanf.factoryshopserver.clases;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Julian andres
  */
 public class FactoryShop {
-    
-    private ArrayList<Producto> productos = new ArrayList<>();
+    private CopyOnWriteArrayList<Producto> productos = new CopyOnWriteArrayList<>();
 
-    // Agregar producto
-    public void agregarProducto(Producto producto) {
-        productos.add(producto);
-        JOptionPane.showMessageDialog(null, "Producto "+ producto.getNombre() +  " creado");
-        listarProductos();
+    public FactoryShop() {
+        try {
+            ArrayList<Producto> productosLeidos = Reader.leerProductos("../data/productos");
+            productos.addAll(productosLeidos);
+        } catch (IOException ex) {
+            System.err.println("Inventario inicializado vacío.");
+        }
     }
 
-    // Eliminar producto
+    public void agregarProducto(Producto producto) {
+        productos.add(producto);
+        guardarCambios();
+    }
+
     public boolean eliminarProducto(int id) {
         for (Producto p : productos) {
             if (p.getId() == id) {
-                String nombre = p.getNombre();
                 productos.remove(p);
-                JOptionPane.showMessageDialog(null, "Producto "+ nombre +  " Eliminado");
+                guardarCambios();
                 return true;
             }
         }
-        JOptionPane.showMessageDialog(null, "Producto no encontrado");
         return false;
     }
 
-    // Actualizar producto
     public boolean actualizarProducto(int id, String nombre, String descripcion, double precio, int cantidad) {
         for (Producto p : productos) {
             if (p.getId() == id) {
@@ -44,25 +49,26 @@ public class FactoryShop {
                 p.setDescripcion(descripcion);
                 p.setPrecio(precio);
                 p.setCantidad(cantidad);
-                JOptionPane.showMessageDialog(null, "Producto Actualizado");
+                guardarCambios();
                 return true;
             }
         }
-        JOptionPane.showMessageDialog(null, "Producto no encontrado");
         return false;
     }
 
-    // Listar productos
-    public void listarProductos() {
-        if (productos.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "sin productos");
-        } else {
-            for (Producto p : productos) {
-                System.out.println(p);
-            }
+    private void guardarCambios() {
+        try {
+            Writer.guardarProductos("../data/productos", new ArrayList<>(productos));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-    
-        
-    
+
+    public void listarProductos() {
+        if (productos.isEmpty()) {
+            System.out.println("Inventario vacío");
+        } else {
+            productos.forEach(System.out::println);
+        }
+    }
 }

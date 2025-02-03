@@ -4,11 +4,13 @@
  */
 package com.juanf.factoryshopserver.clases;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Julian andres
  */
-public class Producto {
+public class Producto implements Serializable{
     
     private int id;
     private String nombre;
@@ -63,7 +65,6 @@ public class Producto {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
-    
     
      @Override
     public String toString() {

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.juanf.factoryshopserver.networkLayer;
+import com.juanf.factoryshopserver.clases.CreadorLogs;
 import com.juanf.factoryshopserver.clases.FactoryShop;
 import com.juanf.factoryshopserver.clases.Producto;
 import java.io.*;
@@ -11,7 +12,6 @@ import java.net.Socket;
  *
  * @author juanf
  */
-
 
 public class ControlCliente extends Thread {
     private Socket clientSocket;
@@ -23,26 +23,38 @@ public class ControlCliente extends Thread {
     }
 
     public void run() {
+        
         try (InputStream input = clientSocket.getInputStream();
              OutputStream output = clientSocket.getOutputStream();
              ObjectInputStream objectInput = new ObjectInputStream(input);
              ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
-
+            String clientIP = clientSocket.getInetAddress().getHostAddress();
             // Handle client requests
             String request = (String) objectInput.readObject();
             switch (request) {
                 case "ADD":
                     Producto producto = (Producto) objectInput.readObject();
                     almacen.agregarProducto(producto);
+                    CreadorLogs.log("ADD", clientIP, "Producto ID: " + producto.getId());
                     break;
                 case "DELETE":
                     String productoid = (String) objectInput.readObject();
                     int id=Integer.parseInt(productoid);
                     almacen.eliminarProducto(id);
+                    CreadorLogs.log("DELETE", clientIP, "Producto ID: " + id);
                     break;
-                case "UPDATE":
-                    String name = (String) objectInput.readObject();
-                    break;
+                case "UPDATE":    
+                int idActualizar = Integer.parseInt((String) objectInput.readObject());
+                Producto nuevosDatos = (Producto) objectInput.readObject();
+                almacen.actualizarProducto(
+                    idActualizar, 
+                    nuevosDatos.getNombre(), 
+                    nuevosDatos.getDescripcion(), 
+                    nuevosDatos.getPrecio(), 
+                    nuevosDatos.getCantidad()
+                );
+                CreadorLogs.log("UPDATE", clientIP, "Producto ID: " + idActualizar);
+                break;
             }
 
             // Send response back to client

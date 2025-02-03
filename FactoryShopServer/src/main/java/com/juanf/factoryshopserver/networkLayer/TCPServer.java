@@ -5,33 +5,45 @@
 package com.juanf.factoryshopserver.networkLayer;
 
 import com.juanf.factoryshopserver.clases.FactoryShop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyStore;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author juanf
  */
+import javax.net.ssl.*;
+
 public class TCPServer {
-    private int port=12345;
+    private int port;
     private FactoryShop almacen;
 
     public TCPServer() {
+        this.port = 9090;
         this.almacen = new FactoryShop();
     }
-    
-    public void start(){
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started on port " + port);
+
+    public void start() {
+        try {
+            SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            SSLServerSocket serverSocket = (SSLServerSocket) ssf.createServerSocket(port);
+            System.out.println("SSL Server started on port " + port);
+            
             while (true) {
-                Socket clientSocket = serverSocket.accept();
+                SSLSocket clientSocket = (SSLSocket) serverSocket.accept();
                 new ControlCliente(clientSocket, almacen).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-    
 }
