@@ -5,6 +5,9 @@
 package com.juanf.factoryshopserver.clases;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -15,14 +18,34 @@ import java.util.logging.Logger;
  * @author Julian andres
  */
 public class FactoryShop {
-    private CopyOnWriteArrayList<Producto> productos = new CopyOnWriteArrayList<>();
+    
+    private ArrayList<Producto> productos = new ArrayList<>();
+
+    public ArrayList<Producto> getProductos() {
+        return productos;
+    }
 
     public FactoryShop() {
+            Path path = Paths.get("data/productos");
+        System.out.println("Buscando el archivo en: " + path.toAbsolutePath());
         try {
-            ArrayList<Producto> productosLeidos = Reader.leerProductos("../data/productos");
+            // Ruta relativa directa: "data/productos"
+            ArrayList<Producto> productosLeidos = Reader.leerProductos("data/productos");
             productos.addAll(productosLeidos);
         } catch (IOException ex) {
-            System.err.println("Inventario inicializado vacío.");
+            System.err.println("Inventario inicializado vacío. Razón: " + ex.getMessage());
+            crearArchivoProductos();
+        }
+    }
+
+    private void crearArchivoProductos() {
+        try {
+            Path path = Paths.get("data/productos");
+            Files.createDirectories(path.getParent()); 
+            Files.createFile(path); 
+            System.out.println("Archivo 'productos' creado en: " + path.toAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -58,7 +81,7 @@ public class FactoryShop {
 
     private void guardarCambios() {
         try {
-            Writer.guardarProductos("../data/productos", new ArrayList<>(productos));
+            Writer.guardarProductos("data/productos", new ArrayList<>(productos));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@
 
 package com.juanf.factoryshopclient;
 
+import com.juanf.factoryshopclient.gui.tienda;
 import com.juanf.factoryshopclient.networkClient.TCPClient;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +14,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  *
@@ -37,13 +39,9 @@ public class FactoryShopClient {
         System.setProperty("javax.net.ssl.trustStore", sslRoute);
         System.setProperty("javax.net.ssl.trustStorePassword", sslPassword);
         System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
-        Scanner in = new Scanner(System.in);
-        System.out.println("Type your name");
-        String name = in.nextLine();
-        System.out.println("Type your last name");
-        String lastName = in.nextLine();
-        TCPClient client = new TCPClient("192.168.194.17", 9090);
-        String response = client.sendMessage("Simon", "Gaviria");
-        System.out.println(response);
+        
+        java.awt.EventQueue.invokeLater(() -> {
+                new tienda().setVisible(true);
+            });
     }
 }

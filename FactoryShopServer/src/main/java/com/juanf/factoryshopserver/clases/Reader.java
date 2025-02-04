@@ -22,6 +22,12 @@ public class Reader {
     public static ArrayList leerProductos(String file) throws IOException {
         ArrayList<Producto> productos = new ArrayList<>();
         Path path = Paths.get(file);
+        
+        if (!Files.exists(path)) {
+            Files.createDirectories(path.getParent());
+            Files.createFile(path);
+            return productos; // Retorna lista vacía
+        }
 
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;

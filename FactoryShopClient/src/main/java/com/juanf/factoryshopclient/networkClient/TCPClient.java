@@ -7,6 +7,8 @@ package com.juanf.factoryshopclient.networkClient;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -18,55 +20,47 @@ public class TCPClient {
     private String serverAddress;
     private int port;
     private SSLSocket clientSocket;
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
+    private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
 
     public TCPClient(String serverAddress, int port) {
         this.serverAddress = serverAddress;
         this.port = port;
     }
     
-    public void connect() throws IOException{
-        //clientSocket = new (serverAddress, port);
-        SSLSocketFactory socketFactory = (SSLSocketFactory)SSLSocketFactory.getDefault();
-        clientSocket = (SSLSocket)socketFactory.createSocket(serverAddress, port);
-        System.out.println("Connection established");
-        inputStream = new DataInputStream(clientSocket.getInputStream());
-        outputStream = new DataOutputStream(clientSocket.getOutputStream());
+    public void connect() throws IOException {
+        SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        clientSocket = (SSLSocket) socketFactory.createSocket(serverAddress, port);
+        System.out.println("Conexión SSL establecida con el servidor.");
+        outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+        inputStream = new ObjectInputStream(clientSocket.getInputStream());
     }
     
-    public String sendMessage(String name, String lastName){
-        String response = "Error";
+    public String sendOperation(String operation, Producto producto) {
         try {
             connect();
-            StringBuilder sb = new StringBuilder();
-            sb.append(name).append(":").append(lastName);
-            String message = sb.toString();
-            System.out.println("Sending: "+message);
-            outputStream.writeUTF(message);
-            response = inputStream.readUTF();
-            System.out.println("Response: "+response);
-        } catch (IOException ex) {
-            System.out.println("Client error: "+ex.getMessage());
+            // Enviar operación y objeto Producto
+            outputStream.writeObject(operation);
+            outputStream.writeObject(producto);
+            
+            // Recibir respuesta del servidor
+            String response = (String) inputStream.readObject();
+            return response;
+            
+        } catch (IOException | ClassNotFoundException e) {
+            return "Error: " + e.getMessage();
         } finally {
             closeConnection();
         }
-        return response;
     }
     
-    public void closeConnection(){
-        try{
-            if(inputStream != null){
-            inputStream.close();
-            }
-            if(outputStream != null){
-                outputStream.close();
-            }
-            if(clientSocket != null){
-                clientSocket.close();
-            }
-        }catch(IOException ex){
-            System.out.println("Error closing connection: "+ex.getMessage());
+    public void closeConnection() {
+        try {
+            if (outputStream != null) outputStream.close();
+            if (inputStream != null) inputStream.close();
+            if (clientSocket != null) clientSocket.close();
+        } catch (IOException ex) {
+            System.err.println("Error al cerrar conexión: " + ex.getMessage());
         }
-    }    
+    }
 }

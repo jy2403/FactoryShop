@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.juanf.factoryshopserver.networkLayer;
+import com.juanf.factoryshopserver.clases.CSVExportador;
 import com.juanf.factoryshopserver.clases.CreadorLogs;
 import com.juanf.factoryshopserver.clases.FactoryShop;
 import com.juanf.factoryshopserver.clases.Producto;
@@ -44,17 +45,21 @@ public class ControlCliente extends Thread {
                     CreadorLogs.log("DELETE", clientIP, "Producto ID: " + id);
                     break;
                 case "UPDATE":    
-                int idActualizar = Integer.parseInt((String) objectInput.readObject());
-                Producto nuevosDatos = (Producto) objectInput.readObject();
-                almacen.actualizarProducto(
-                    idActualizar, 
-                    nuevosDatos.getNombre(), 
-                    nuevosDatos.getDescripcion(), 
-                    nuevosDatos.getPrecio(), 
-                    nuevosDatos.getCantidad()
-                );
-                CreadorLogs.log("UPDATE", clientIP, "Producto ID: " + idActualizar);
-                break;
+                    int idActualizar = Integer.parseInt((String) objectInput.readObject());
+                    Producto nuevosDatos = (Producto) objectInput.readObject();
+                    almacen.actualizarProducto(
+                        idActualizar, 
+                        nuevosDatos.getNombre(), 
+                        nuevosDatos.getDescripcion(), 
+                        nuevosDatos.getPrecio(), 
+                        nuevosDatos.getCantidad()
+                    );
+                    CreadorLogs.log("UPDATE", clientIP, "Producto ID: " + idActualizar);
+                    break;
+                case "CSV":
+                    String inventario= CSVExportador.generarCSVInventario(almacen.getProductos());
+                    objectOutput.writeObject(inventario);
+                    CreadorLogs.log("UPDATE", clientIP,"Inventario Generado");
             }
 
             // Send response back to client

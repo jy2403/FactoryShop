@@ -4,12 +4,16 @@
  */
 package com.juanf.factoryshopclient.gui;
 
+import com.juanf.factoryshopclient.networkClient.TCPClient;
+
 /**
  *
  * @author Julian andres
  */
 public class tienda extends javax.swing.JFrame {
-
+    private TCPClient cliente;
+    private final String SERVER_ADDRESS = "localhost";
+    
     /**
      * Creates new form tienda
      */
@@ -97,12 +101,13 @@ public class tienda extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        editar add = new editar(this, rootPaneCheckingEnabled);
+        Agregar add = new Agregar(this, rootPaneCheckingEnabled);
         add.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        editar add = new editar(this, rootPaneCheckingEnabled);
+        add.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
