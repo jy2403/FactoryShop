@@ -8,12 +8,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- *
+ * Clase encargada de generar y guardar un archivo CSV con información de productos.
  * @author juanf
  */
 public class CSVGenerador {
 
-        public static void guardarProductosCSV(String respuesta) {
+    /**
+     * Guarda la lista de productos en un archivo CSV.
+     * 
+     * @param respuesta Cadena con la información de los productos, separada por ';' y atributos por '|'.
+     */
+    public static void guardarProductosCSV(String respuesta) {
         if (respuesta == null || respuesta.isEmpty()) {
             System.out.println("Respuesta vacía o nula.");
             return;
@@ -21,7 +26,6 @@ public class CSVGenerador {
 
         try (FileWriter fw = new FileWriter("productos.csv")) {
             fw.write("ID,Nombre,Descripción,Precio,Cantidad\n");
-
 
             String[] productos = respuesta.split(";");
 
@@ -39,4 +43,3 @@ public class CSVGenerador {
         }
     }
 }
-

@@ -12,14 +12,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- *
+ * La claseproporciona un método para leer productos desde un archivo
+ * y devolver una lista de objetos que representan los productos leídos.
+ * 
  * @author juanf
  */
 public class Reader {
-
+    /**
+     * Lee los productos desde el archivo especificado y devuelve una lista de objetos
+     * que representan los productos leídos.
+     * 
+     * @param file El nombre y la ruta del archivo desde el cual se deben leer los productos.
+     * @return Una lista de objetos leídos desde el archivo.
+     * @throws IOException Si ocurre un error al leer o crear el archivo.
+     */
     public static ArrayList leerProductos(String file) throws IOException {
         ArrayList<Producto> productos = new ArrayList<>();
         Path path = Paths.get(file);

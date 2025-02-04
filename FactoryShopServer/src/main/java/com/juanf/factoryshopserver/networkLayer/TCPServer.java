@@ -5,33 +5,37 @@
 package com.juanf.factoryshopserver.networkLayer;
 
 import com.juanf.factoryshopserver.clases.FactoryShop;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.security.KeyStore;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-/**
- *
- * @author juanf
- */
 import javax.net.ssl.*;
 
+/**
+ * La clase implementa un servidor de comunicaciones seguro utilizando SSL
+ * para recibir y procesar solicitudes de clientes a través de un socket.
+ * 
+ * @author juanf
+ */
 public class TCPServer {
+    /**
+     * El puerto en el que el servidor escucha las conexiones entrantes de los clientes.
+     */
     private int port;
+    /**
+     * La instancia del sistema de inventario que gestiona los productos.
+     */
     private FactoryShop almacen;
-
+    
+    /**
+     * Constructor de la clase que inicializa el puerto y el almacén.
+     */
     public TCPServer() {
-        this.port = 9090;
+        this.port = 443;
         this.almacen = new FactoryShop();
     }
-
+    /**
+     * Método que inicia el servidor SSL, habilitando la aceptación de conexiones
+     * entrantes de clientes en el puerto especificado.
+     * @throws IOException Si ocurre un error al crear el socket o aceptar conexiones.
+     */
     public void start() {
         try {
             SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();

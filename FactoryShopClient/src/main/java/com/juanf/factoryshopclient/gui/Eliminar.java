@@ -9,16 +9,22 @@ import com.juanf.factoryshopclient.networkClient.TCPClient;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author juanf
+ * Clase Eliminar representa un cuadro de diálogo para eliminar un producto de la bodega.
+ * Permite ingresar el ID de un producto y enviarlo al servidor para su eliminación
+ * a través de un cliente TCP.
+ * 
+ * @author Julian Andres
  */
 public class Eliminar extends javax.swing.JDialog {
+    /** Cliente TCP para comunicarse con el servidor. */
     private final TCPClient cliente;
+    
     /**
-     * Creates new form Eliminar
-     * @param parent
-     * @param modal
-     * @param cliente
+     * Crea una nueva instancia de Eliminar.
+     * 
+     * @param parent La ventana padre.
+     * @param modal Define si el cuadro de diálogo es modal.
+     * @param cliente Cliente TCP para enviar datos al servidor.
      */
     public Eliminar(java.awt.Frame parent, boolean modal, TCPClient cliente) {
         super(parent, modal);
@@ -39,6 +45,7 @@ public class Eliminar extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         Txtid = new javax.swing.JTextField();
         eliminar = new javax.swing.JButton();
+        salir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -53,15 +60,24 @@ public class Eliminar extends javax.swing.JDialog {
             }
         });
 
+        salir.setText("X");
+        salir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(salir))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(77, 77, 77)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -74,8 +90,10 @@ public class Eliminar extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jLabel1)
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(salir))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(35, 35, 35)
@@ -84,7 +102,7 @@ public class Eliminar extends javax.swing.JDialog {
                             .addComponent(Txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                         .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(22, 22, 22))))
         );
@@ -93,32 +111,50 @@ public class Eliminar extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
-        // TODO add your handling code here:
+    /**
+     * Método ejecutado cuando se presiona el botón "Eliminar Producto".
+     * Llama al método eliminarProducto para procesar la eliminación del producto.
+     * 
+     * @param evt Evento de acción.
+     */
         eliminarProducto();
     }//GEN-LAST:event_eliminarActionPerformed
+
+    private void salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirActionPerformed
+        /**
+        * Método ejecutado cuando se presiona el botón "X" para cerrar el cuadro de diálogo.
+        *
+        * @param evt Evento de acción.
+        */
+        this.dispose();
+    }//GEN-LAST:event_salirActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField Txtid;
     private javax.swing.JButton eliminar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton salir;
     // End of variables declaration//GEN-END:variables
 
-private void eliminarProducto() {
-        try {
-            int id = Integer.parseInt(Txtid.getText().trim());
-            String respuesta = cliente.sendOperation("DELETE", new Producto(id, "", "", 0, 0));
-            
-            if (respuesta.startsWith("Error")) {
-                JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Producto eliminado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                Txtid.setText("");
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID inválido.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+    /**
+     * Envía una solicitud al servidor para eliminar un producto con el ID ingresado.
+     * Valida que el ID sea un número entero y muestra mensajes de error en caso de datos inválidos.
+     */
+    private void eliminarProducto() {
+            try {
+                int id = Integer.parseInt(Txtid.getText().trim());
+                String respuesta = cliente.sendOperation("DELETE", new Producto(id, "", "", 0, 0));
 
+                if (respuesta.startsWith("Error")) {
+                    JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Producto eliminado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    Txtid.setText("");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "ID inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
 
 }

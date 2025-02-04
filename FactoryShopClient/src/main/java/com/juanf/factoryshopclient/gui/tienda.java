@@ -8,16 +8,23 @@ import com.juanf.factoryshopclient.clases.CSVGenerador;
 import com.juanf.factoryshopclient.networkClient.TCPClient;
 
 /**
- *
- * @author Julian andres
+ * Esta clase representa la interfaz gráfica de la tienda que interactúa con un cliente TCP.
+ * Permite agregar, editar, eliminar artículos y solicitar el inventario.
+ * La comunicación con el servidor se realiza a través de un objeto `TCPClient`.
+ * 
+ * @author Julian Andres
  */
 public class tienda extends javax.swing.JFrame {
+    
+     /** Cliente TCP para comunicarse con el servidor. */
     private final TCPClient cliente;
     
     /**
-     * Creates new form tienda
-     * @param serverAddress
-     * @param port
+     * Crea una nueva instancia de la clase tienda, inicializando la conexión con el servidor
+     * a través de un cliente TCP.
+     * 
+     * @param serverAddress Dirección del servidor con el que se conectará.
+     * @param port Puerto en el que el servidor está escuchando.
      */
     public tienda(String serverAddress,int port) {
         initComponents();
@@ -126,24 +133,44 @@ public class tienda extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Acción que se realiza cuando se hace clic en el botón "Agregar artículo".
+     * Abre una ventana de la clase `Agregar` para añadir un artículo al sistema.
+     * 
+     * @param evt Evento de acción generado por el botón.
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+
         Agregar add = new Agregar(this,true,cliente);
         add.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    /**
+     * Acción que se realiza cuando se hace clic en el botón "Editar artículo".
+     * Abre una ventana de la clase `Editar` para editar un artículo existente.
+     * 
+     * @param evt Evento de acción generado por el botón.
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Editar edit = new Editar(this,true,cliente);
         edit.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    /**
+     * Acción que se realiza cuando se hace clic en el botón "Eliminar artículo".
+     * Abre una ventana de la clase `Eliminar` para eliminar un artículo del sistema.
+     * 
+     * @param evt Evento de acción generado por el botón.
+     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         Eliminar delete = new Eliminar(this,true, cliente);
         delete.setVisible(true);
         
     }//GEN-LAST:event_jButton3ActionPerformed
-
+    /**
+     * Acción que se realiza cuando se hace clic en el botón "Solicitar inventario".
+     * Solicita el inventario al servidor y guarda la información en un archivo CSV.
+     * 
+     * @param evt Evento de acción generado por el botón.
+     */
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         CSVGenerador.guardarProductosCSV(cliente.sendOperation("CSV", null));  
     }//GEN-LAST:event_jButton4ActionPerformed

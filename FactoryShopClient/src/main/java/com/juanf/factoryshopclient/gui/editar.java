@@ -10,16 +10,23 @@ import com.juanf.factoryshopclient.networkClient.TCPClient;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Julian andres
+ * Clase Editar representa un cuadro de diálogo para editar un producto en la bodega.
+ * Permite modificar el ID, nombre, descripción, precio y cantidad de un producto
+ * y enviarlo al servidor a través de un cliente TCP.
+ * 
+ * @author Julian Andres
  */
 public class Editar extends javax.swing.JDialog {
+    
+    
     private final TCPClient cliente;
+    
     /**
-     * Creates new form agregar
-     * @param parent
-     * @param modal
-     * @param cliente
+     * Crea una nueva instancia de Editar.
+     * 
+     * @param parent La ventana padre.
+     * @param modal Define si el cuadro de diálogo es modal.
+     * @param cliente Cliente TCP para enviar datos al servidor.
      */
     public Editar(java.awt.Frame parent, boolean modal,TCPClient cliente) {
         super(parent, modal);
@@ -155,14 +162,23 @@ public class Editar extends javax.swing.JDialog {
     private void TxtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtNombreActionPerformed
-
+    /**
+     * Método ejecutado cuando se presiona el botón "Editar Producto".
+     * Llama al método crearProducto para procesar la edición del producto.
+     * 
+     * @param evt Evento de acción.
+     */
     private void editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarActionPerformed
-        // TODO add your handling code here:
-        crearProducto();
-    }//GEN-LAST:event_editarActionPerformed
 
+        editarProducto();
+    }//GEN-LAST:event_editarActionPerformed
+    /**
+     * Método ejecutado cuando se presiona el botón "X" para cerrar el cuadro de diálogo.
+     * 
+     * @param evt Evento de acción.
+     */
     private void salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirActionPerformed
-        // TODO add your handling code here:
+
         this.dispose();
     }//GEN-LAST:event_salirActionPerformed
 
@@ -183,46 +199,54 @@ public class Editar extends javax.swing.JDialog {
     private javax.swing.JButton salir;
     // End of variables declaration//GEN-END:variables
 
-    private void crearProducto() {
-    try {
-        
-        if (Txtid.getText().trim().isEmpty() ||
-            TxtNombre.getText().trim().isEmpty() ||
-            TxtDescripcion.getText().trim().isEmpty() ||
-            TxtPrecio.getText().trim().isEmpty() ||
-            TxtCantidad.getText().trim().isEmpty()) {
-            
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    /**
+     * Crea un objeto Producto con los datos ingresados y lo envía al servidor.
+     * Valida que los campos no estén vacíos y que los valores numéricos sean positivos.
+     * 
+     * Muestra mensajes de error en caso de datos inválidos o errores en la comunicación.
+     */
+    private void editarProducto() {
+        try {
 
-        int id = Integer.parseInt(Txtid.getText().trim());
-        String nombre = TxtNombre.getText().trim();
-        String descripcion = TxtDescripcion.getText().trim();
-        double precio = Double.parseDouble(TxtPrecio.getText().trim());
-        int cantidad = Integer.parseInt(TxtCantidad.getText().trim());
+            if (Txtid.getText().trim().isEmpty() ||
+                TxtNombre.getText().trim().isEmpty() ||
+                TxtDescripcion.getText().trim().isEmpty() ||
+                TxtPrecio.getText().trim().isEmpty() ||
+                TxtCantidad.getText().trim().isEmpty()) {
 
-        if (id < 0 || precio < 0 || cantidad < 0) {
-            JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores positivos.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
-        String respuesta = cliente.sendOperation("UPDATE", p);
-            if (respuesta.startsWith("Error")) {
-                JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Producto actualizado en el servidor.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                borrar();
+                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores numéricos.", "ERROR", JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-    }
-}
+            int id = Integer.parseInt(Txtid.getText().trim());
+            String nombre = TxtNombre.getText().trim();
+            String descripcion = TxtDescripcion.getText().trim();
+            double precio = Double.parseDouble(TxtPrecio.getText().trim());
+            int cantidad = Integer.parseInt(TxtCantidad.getText().trim());
 
+            if (id < 0 || precio < 0 || cantidad < 0) {
+                JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores positivos.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
+            String respuesta = cliente.sendOperation("UPDATE", p);
+                if (respuesta.startsWith("Error")) {
+                    JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Producto actualizado en el servidor.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    borrar();
+                }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores numéricos.", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    /**
+     * Borra el contenido de los campos de entrada.
+     */
     private void borrar() {
         
         TxtCantidad.setText("");

@@ -7,20 +7,42 @@ import com.juanf.factoryshared.clases.Producto;
 import com.juanf.factoryshopserver.clases.*;
 import java.io.*;
 import java.net.Socket;
+
 /**
- *
+ * La clase maneja las solicitudes de los clientes que se conectan
+ * a un servidor a través de un socket. Cada cliente se maneja en un hilo separado, lo que
+ * permite procesar múltiples solicitudes de manera concurrente.
+ * 
  * @author juanf
  */
 
 public class ControlCliente extends Thread {
+    /**
+     * El socket del cliente con el cual se establece la comunicación.
+     */
     private Socket clientSocket;
+    /**
+     * La instancia del sistema de inventario donde se realizarán las operaciones.
+     */
     private FactoryShop almacen;
-
+    /**
+     * Constructor de la clase que inicializa el socket del cliente
+     * y la instancia del sistema de inventario.
+     * 
+     * @param socket El socket del cliente con el que se establece la comunicación.
+     * @param almacen La instancia del almacén de productos donde se realizarán las operaciones.
+     */
     public ControlCliente(Socket socket,FactoryShop almacen) {
         this.clientSocket = socket;
         this.almacen = almacen;
     }
-
+    /**
+     * Método que se ejecuta cuando el hilo es iniciado. Este método maneja
+     * las solicitudes del cliente mediante la lectura y escritura de objetos a través
+     * de streams.
+     * Después de procesar la solicitud, el método envía una respuesta de operación exitosa
+     * al cliente.
+     */
     @Override
     public void run() {
         

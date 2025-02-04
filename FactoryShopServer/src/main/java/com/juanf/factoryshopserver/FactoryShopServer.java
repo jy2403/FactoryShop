@@ -13,10 +13,19 @@ import java.util.Properties;
 import java.util.logging.*;
 
 /**
- *
+ * Clase principal para el servidor de la tienda.
+ * Configura la conexión SSL utilizando los parámetros especificados en el archivo
+ * de propiedades y luego inicia el servidor TCP.
+ * 
  * @author juanf
  */
 public class FactoryShopServer {
+
+    /**
+     * El método principal que inicia el servidor.
+     *
+     * @param args Argumentos de línea de comandos.
+     */
 
     public static void main(String[] args) {
         

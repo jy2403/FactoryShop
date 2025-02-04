@@ -11,13 +11,18 @@ import java.io.IOException;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 
-
 /**
- *
+ * Clase principal para el cliente de la tienda.
+ * Se encarga de cargar la configuración SSL y lanzar la interfaz gráfica.
  * @author juanf
  */
 public class FactoryShopClient {
 
+    /**
+     * Método principal que inicia la aplicación.
+     * 
+     * @param args Argumentos de línea de comandos.
+     */
     public static void main(String[] args) {
         Properties p = new Properties();
         try {
@@ -31,8 +36,10 @@ public class FactoryShopClient {
             System.setProperty("javax.net.ssl.trustStore", sslRoute);
             System.setProperty("javax.net.ssl.trustStorePassword", sslPassword);
             
+            System.setProperty("java.net.ssl.trustStoreType","PKCS12");
+            
             java.awt.EventQueue.invokeLater(() -> {
-                new tienda("172.24.32.140",9090).setVisible(true);
+                new tienda("172.24.32.140", 9090).setVisible(true);
             });
             
         } catch (IOException ex) {
@@ -40,3 +47,4 @@ public class FactoryShopClient {
         }
     }
 }
+

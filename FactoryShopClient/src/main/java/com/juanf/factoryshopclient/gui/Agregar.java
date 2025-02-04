@@ -10,13 +10,26 @@ import com.juanf.factoryshopclient.networkClient.TCPClient;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Julian andres
+ * Clase Agregar representa un cuadro de diálogo que permite al usuario
+ * agregar un nuevo producto a la bodega enviando los datos a través de un cliente TCP.
+ * 
+ * Esta ventana proporciona campos para ingresar el ID, nombre, descripción,
+ * cantidad y precio del producto, así como botones para agregar el producto
+ * y cerrar la ventana.
+ * 
+ * @author Julian Andres
  */
 public class Agregar extends javax.swing.JDialog {
+    
+    /** Cliente TCP para la comunicación con el servidor. */
     private final TCPClient cliente;
+
     /**
-     * Creates new form agregar
+     * Constructor de la clase Agregar.
+     * 
+     * @param parent Ventana padre del cuadro de diálogo.
+     * @param modal Define si el cuadro de diálogo es modal.
+     * @param cliente Cliente TCP utilizado para la comunicación con el servidor.
      */
     public Agregar(java.awt.Frame parent, boolean modal,TCPClient cliente) {
         super(parent, modal);
@@ -154,14 +167,23 @@ public class Agregar extends javax.swing.JDialog {
     private void TxtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtNombreActionPerformed
-
+    /**
+     * Método ejecutado cuando se presiona el botón "Agregar Producto".
+     * Llama al método crearProducto() para procesar la información ingresada.
+     * 
+     * @param evt Evento de acción generado por el botón.
+     */
     private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
-        // TODO add your handling code here:
+
         crearProducto();
     }//GEN-LAST:event_agregarActionPerformed
-
+    /**
+     * Método ejecutado cuando se presiona el botón "X" para cerrar la ventana.
+     * 
+     * @param evt Evento de acción generado por el botón.
+     */
     private void salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirActionPerformed
-        // TODO add your handling code here:
+
         this.dispose();
     }//GEN-LAST:event_salirActionPerformed
 
@@ -182,6 +204,14 @@ public class Agregar extends javax.swing.JDialog {
     private javax.swing.JButton salir;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Crea un nuevo producto a partir de los datos ingresados y lo envía al servidor.
+     * Valida que todos los campos estén completos y que los valores numéricos sean correctos.
+     * 
+     * Si la operación en el servidor es exitosa, se muestra un mensaje de éxito y
+     * se borran los campos del formulario.
+     * 
+     */
     private void crearProducto() {
     try {
         
@@ -218,6 +248,9 @@ public class Agregar extends javax.swing.JDialog {
     }
 }
 
+    /**
+     * Borra los campos de entrada del formulario.
+     */
     private void borrar() {
         
         TxtCantidad.setText("");
