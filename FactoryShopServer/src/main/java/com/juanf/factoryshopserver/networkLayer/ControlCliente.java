@@ -3,10 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.juanf.factoryshopserver.networkLayer;
-import com.juanf.factoryshopserver.clases.CSVExportador;
-import com.juanf.factoryshopserver.clases.CreadorLogs;
-import com.juanf.factoryshopserver.clases.FactoryShop;
-import com.juanf.factoryshopserver.clases.Producto;
+import com.juanf.factoryshared.clases.Producto;
+import com.juanf.factoryshopserver.clases.*;
 import java.io.*;
 import java.net.Socket;
 /**
@@ -23,6 +21,7 @@ public class ControlCliente extends Thread {
         this.almacen = almacen;
     }
 
+    @Override
     public void run() {
         
         try (InputStream input = clientSocket.getInputStream();
@@ -33,33 +32,35 @@ public class ControlCliente extends Thread {
             // Handle client requests
             String request = (String) objectInput.readObject();
             switch (request) {
-                case "ADD":
+                case "ADD" -> {
                     Producto producto = (Producto) objectInput.readObject();
                     almacen.agregarProducto(producto);
                     CreadorLogs.log("ADD", clientIP, "Producto ID: " + producto.getId());
-                    break;
-                case "DELETE":
-                    String productoid = (String) objectInput.readObject();
-                    int id=Integer.parseInt(productoid);
+                }
+                case "DELETE" -> {
+                    Producto producto = (Producto) objectInput.readObject();
+                    int id=producto.getId();
                     almacen.eliminarProducto(id);
                     CreadorLogs.log("DELETE", clientIP, "Producto ID: " + id);
-                    break;
-                case "UPDATE":    
+                }
+                case "UPDATE" -> {    
                     int idActualizar = Integer.parseInt((String) objectInput.readObject());
                     Producto nuevosDatos = (Producto) objectInput.readObject();
                     almacen.actualizarProducto(
-                        idActualizar, 
-                        nuevosDatos.getNombre(), 
-                        nuevosDatos.getDescripcion(), 
-                        nuevosDatos.getPrecio(), 
-                        nuevosDatos.getCantidad()
+                            idActualizar,
+                            nuevosDatos.getNombre(),
+                            nuevosDatos.getDescripcion(),
+                            nuevosDatos.getPrecio(),
+                            nuevosDatos.getCantidad()
                     );
                     CreadorLogs.log("UPDATE", clientIP, "Producto ID: " + idActualizar);
-                    break;
-                case "CSV":
-                    String inventario= CSVExportador.generarCSVInventario(almacen.getProductos());
+                }
+                case "CSV" -> {
+                    String inventario= almacen.generarInventario();
+                    System.out.println(inventario);
                     objectOutput.writeObject(inventario);
                     CreadorLogs.log("UPDATE", clientIP,"Inventario Generado");
+                }
             }
 
             // Send response back to client

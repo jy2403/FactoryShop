@@ -4,6 +4,7 @@
  */
 package com.juanf.factoryshopserver.clases;
 
+import com.juanf.factoryshared.clases.Producto;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +22,7 @@ public class Writer {
         Path path = Paths.get(file);
         try (BufferedWriter bw = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             for (Producto p : productos) {
-                String linea = String.format("%d,%s,%s,%.2f,%d",
+                String linea = String.format("%d|%s|%s|%.2f|%d",
                         p.getId(), p.getNombre(), p.getDescripcion(), p.getPrecio(), p.getCantidad());
                 bw.write(linea);
                 bw.newLine();

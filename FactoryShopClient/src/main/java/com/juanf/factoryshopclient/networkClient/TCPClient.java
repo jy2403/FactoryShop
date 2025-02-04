@@ -4,8 +4,7 @@
  */
 package com.juanf.factoryshopclient.networkClient;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import com.juanf.factoryshared.clases.Producto;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -39,14 +38,9 @@ public class TCPClient {
     public String sendOperation(String operation, Producto producto) {
         try {
             connect();
-            // Enviar operación y objeto Producto
             outputStream.writeObject(operation);
             outputStream.writeObject(producto);
-            
-            // Recibir respuesta del servidor
-            String response = (String) inputStream.readObject();
-            return response;
-            
+            return (String) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             return "Error: " + e.getMessage();
         } finally {

@@ -4,6 +4,7 @@
  */
 package com.juanf.factoryshopserver.clases;
 
+import com.juanf.factoryshared.clases.Producto;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,9 +34,9 @@ public class Reader {
             String line;
             while ((line = br.readLine()) != null) {
                 try {
-                    String[] campos = line.split(",");
+                    String[] campos = line.split("|");
                     if (campos.length != 5) {
-                        System.err.println("Línea inválida, se esperaban 5 campos: " + line);
+                        System.err.println("Línea vacia");
                         continue;
                     }
                     int id = Integer.parseInt(campos[0].trim());

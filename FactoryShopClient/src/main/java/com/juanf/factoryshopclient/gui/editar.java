@@ -5,19 +5,25 @@
 package com.juanf.factoryshopclient.gui;
 
 
+import com.juanf.factoryshared.clases.Producto;
+import com.juanf.factoryshopclient.networkClient.TCPClient;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Julian andres
  */
-public class editar extends javax.swing.JDialog {
-
+public class Editar extends javax.swing.JDialog {
+    private final TCPClient cliente;
     /**
      * Creates new form agregar
+     * @param parent
+     * @param modal
+     * @param cliente
      */
-    public editar(java.awt.Frame parent, boolean modal) {
+    public Editar(java.awt.Frame parent, boolean modal,TCPClient cliente) {
         super(parent, modal);
+        this.cliente=cliente; 
         initComponents();
         
     }
@@ -40,14 +46,14 @@ public class editar extends javax.swing.JDialog {
         TxtDescripcion = new javax.swing.JTextField();
         TxtCantidad = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        agregar = new javax.swing.JButton();
+        editar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         TxtPrecio = new javax.swing.JTextField();
         salir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Agregar articulo a bodega");
+        jLabel1.setText("edItar articulo a bodega");
 
         jLabel2.setText("id");
 
@@ -63,10 +69,10 @@ public class editar extends javax.swing.JDialog {
 
         jLabel5.setText("Cantidad");
 
-        agregar.setText("Agregar Producto");
-        agregar.addActionListener(new java.awt.event.ActionListener() {
+        editar.setText("Editar Producto");
+        editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                agregarActionPerformed(evt);
+                editarActionPerformed(evt);
             }
         });
 
@@ -93,7 +99,7 @@ public class editar extends javax.swing.JDialog {
                         .addComponent(salir))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(editar, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -139,7 +145,7 @@ public class editar extends javax.swing.JDialog {
                     .addComponent(TxtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addComponent(agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(editar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
         );
 
@@ -150,10 +156,10 @@ public class editar extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtNombreActionPerformed
 
-    private void agregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarActionPerformed
+    private void editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarActionPerformed
         // TODO add your handling code here:
         crearProducto();
-    }//GEN-LAST:event_agregarActionPerformed
+    }//GEN-LAST:event_editarActionPerformed
 
     private void salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirActionPerformed
         // TODO add your handling code here:
@@ -167,7 +173,7 @@ public class editar extends javax.swing.JDialog {
     private javax.swing.JTextField TxtNombre;
     private javax.swing.JTextField TxtPrecio;
     private javax.swing.JTextField Txtid;
-    private javax.swing.JButton agregar;
+    private javax.swing.JButton editar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -200,11 +206,15 @@ public class editar extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores positivos.", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
         Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
-        bodega.agregarProducto(p);
-        JOptionPane.showMessageDialog(this, "Producto agregado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        borrar();
+        String respuesta = cliente.sendOperation("UPDATE", p);
+            if (respuesta.startsWith("Error")) {
+                JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Producto actualizado en el servidor.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                borrar();
+            }
 
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores numéricos.", "ERROR", JOptionPane.ERROR_MESSAGE);

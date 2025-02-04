@@ -4,15 +4,12 @@
  */
 package com.juanf.factoryshopserver.clases;
 
+import com.juanf.factoryshared.clases.Producto;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Julian andres
@@ -93,5 +90,8 @@ public class FactoryShop {
         } else {
             productos.forEach(System.out::println);
         }
+    }
+    public String generarInventario(){
+        return CSVExportador.generarCSVInventario(getProductos());
     }
 }

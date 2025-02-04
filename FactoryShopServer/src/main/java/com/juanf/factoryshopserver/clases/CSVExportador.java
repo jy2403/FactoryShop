@@ -4,6 +4,7 @@
  */
 package com.juanf.factoryshopserver.clases;
 
+import com.juanf.factoryshared.clases.Producto;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,9 +18,8 @@ public class CSVExportador {
     
     public static String generarCSVInventario(ArrayList<Producto> productos) {
         StringWriter sw = new StringWriter();
-        sw.write("ID,Nombre,Descripción,Precio,Cantidad\n");
         for (Producto p : productos) {
-            sw.write(String.format("%d,%s,%s,%.2f,%d\n",
+            sw.write(String.format("%d|%s|%s|%.2f|%d;",
                     p.getId(), p.getNombre(), p.getDescripcion(), p.getPrecio(), p.getCantidad()));
         }
         return sw.toString();

@@ -4,8 +4,9 @@
  */
 package com.juanf.factoryshopclient.gui;
 
-import factory.shop.FactoryShop;
-import factory.shop.Producto;
+
+import com.juanf.factoryshared.clases.Producto;
+import com.juanf.factoryshopclient.networkClient.TCPClient;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,14 +14,15 @@ import javax.swing.JOptionPane;
  * @author Julian andres
  */
 public class Agregar extends javax.swing.JDialog {
-    FactoryShop bodega = new FactoryShop();
-
+    private final TCPClient cliente;
     /**
      * Creates new form agregar
      */
-    public Agregar(java.awt.Frame parent, boolean modal) {
+    public Agregar(java.awt.Frame parent, boolean modal,TCPClient cliente) {
         super(parent, modal);
+        this.cliente=cliente;
         initComponents();
+        
         
     }
 
@@ -192,21 +194,21 @@ public class Agregar extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        int id = Integer.parseInt(Txtid.getText().trim());
-        String nombre = TxtNombre.getText().trim();
-        String descripcion = TxtDescripcion.getText().trim();
-        double precio = Double.parseDouble(TxtPrecio.getText().trim());
-        int cantidad = Integer.parseInt(TxtCantidad.getText().trim());
-
-        if (id < 0 || precio < 0 || cantidad < 0) {
-            JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores positivos.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
-        bodega.agregarProducto(p);
-        JOptionPane.showMessageDialog(this, "Producto agregado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            int id = Integer.parseInt(Txtid.getText().trim());
+            String nombre = TxtNombre.getText().trim();
+            String descripcion = TxtDescripcion.getText().trim();
+            double precio = Double.parseDouble(TxtPrecio.getText().trim());
+            int cantidad = Integer.parseInt(TxtCantidad.getText().trim());
+            
+            Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
+            String respuesta = cliente.sendOperation("ADD", p);
+            
+            if (respuesta.startsWith("Error")) {
+                JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Producto agregado en el servidor.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                borrar();
+            }
         borrar();
 
     } catch (NumberFormatException e) {

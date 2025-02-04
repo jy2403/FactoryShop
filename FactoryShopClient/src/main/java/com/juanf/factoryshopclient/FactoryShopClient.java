@@ -5,15 +5,11 @@
 package com.juanf.factoryshopclient;
 
 import com.juanf.factoryshopclient.gui.tienda;
-import com.juanf.factoryshopclient.networkClient.TCPClient;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -23,25 +19,24 @@ import java.util.logging.Logger;
 public class FactoryShopClient {
 
     public static void main(String[] args) {
-         Properties p = new Properties();
+        Properties p = new Properties();
         try {
-            p.load(new FileInputStream(new File("configuration.properties")));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(FactoryShopClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(FactoryShopClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String sslRoute = p.getProperty("SSL_CERTIFICATE_ROUTE");
-        String sslPassword = p.getProperty("SSL_PASSWORD");
-        System.setProperty("javax.net.ssl.keyStore",sslRoute);
-        System.setProperty("javax.net.ssl.keyStorePassword",sslPassword);
-        System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
-        System.setProperty("javax.net.ssl.trustStore", sslRoute);
-        System.setProperty("javax.net.ssl.trustStorePassword", sslPassword);
-        System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
-        
-        java.awt.EventQueue.invokeLater(() -> {
-                new tienda().setVisible(true);
+            p.load(new FileInputStream(new File("config.properties")));
+            
+            String sslRoute = p.getProperty("SSL_CERTIFICATE_ROUTE");
+            String sslPassword = p.getProperty("SSL_PASSWORD");
+            
+            System.setProperty("javax.net.ssl.keyStore", sslRoute);
+            System.setProperty("javax.net.ssl.keyStorePassword", sslPassword);
+            System.setProperty("javax.net.ssl.trustStore", sslRoute);
+            System.setProperty("javax.net.ssl.trustStorePassword", sslPassword);
+            
+            java.awt.EventQueue.invokeLater(() -> {
+                new tienda("172.24.32.140",9090).setVisible(true);
             });
+            
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error al cargar configuración: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

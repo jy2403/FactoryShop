@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.juanf.factoryshopserver.clases;
+package com.juanf.factoryshared.clases;
 
 import java.io.Serializable;
 
@@ -65,6 +65,7 @@ public class Producto implements Serializable{
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
+    
     
      @Override
     public String toString() {
