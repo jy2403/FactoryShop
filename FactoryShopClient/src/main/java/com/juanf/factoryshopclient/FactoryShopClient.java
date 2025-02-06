@@ -31,6 +31,7 @@ public class FactoryShopClient {
             String sslRoute = p.getProperty("SSL_CERTIFICATE_ROUTE");
             String sslPassword = p.getProperty("SSL_PASSWORD");
             
+            // Configura las propiedades del sistema para SSL/TLS.
             System.setProperty("javax.net.ssl.keyStore", sslRoute);
             System.setProperty("javax.net.ssl.keyStorePassword", sslPassword);
             System.setProperty("javax.net.ssl.trustStore", sslRoute);
@@ -38,8 +39,9 @@ public class FactoryShopClient {
             
             System.setProperty("java.net.ssl.trustStoreType","PKCS12");
             
+            // Inicia la interfaz gráfica en el hilo de eventos de Swing.
             java.awt.EventQueue.invokeLater(() -> {
-                new tienda("172.24.32.140", 9090).setVisible(true);
+                new tienda("172.24.32.140", 443).setVisible(true);
             });
             
         } catch (IOException ex) {

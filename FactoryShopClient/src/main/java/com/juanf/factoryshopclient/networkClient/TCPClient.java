@@ -58,9 +58,14 @@ public class TCPClient {
      * @throws IOException Si ocurre un error al intentar conectar con el servidor o al abrir los flujos.
      */
     public void connect() throws IOException {
+        // Obtiene la fábrica de sockets SSL predeterminada.
         SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        
+        // Crea un socket SSL y lo conecta al servidor en la dirección y puerto especificados.
         clientSocket = (SSLSocket) socketFactory.createSocket(serverAddress, port);
         System.out.println("Conexión SSL establecida con el servidor.");
+        
+        // Inicializa la entrada y salida para la comunicación con el servidor.
         outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
         inputStream = new ObjectInputStream(clientSocket.getInputStream());
     }
@@ -75,15 +80,26 @@ public class TCPClient {
     public String sendOperation(String operation, Producto producto) {
         try {
             connect();
+            
+            // Envía la operación y el objeto Producto al servidor.
             outputStream.writeObject(operation);
             outputStream.writeObject(producto);
-            return (String) inputStream.readObject();
+            outputStream.flush();  // Asegurar que se envíe
+
+            String respuesta = (String) inputStream.readObject();
+
+            // Si la respuesta es nula, devuelve "NOT_FOUND" para evitar errores por valores nulos.
+            if (respuesta == null) {
+                return "NOT_FOUND";  // Nunca devolver null
+            }
+            return respuesta;
         } catch (IOException | ClassNotFoundException e) {
             return "Error: " + e.getMessage();
         } finally {
             closeConnection();
         }
     }
+
     /**
      * Cierra la conexión con el servidor y libera los recursos utilizados.
      */   

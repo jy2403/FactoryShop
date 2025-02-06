@@ -46,28 +46,44 @@ public class ControlCliente extends Thread {
     @Override
     public void run() {
         
-        try (InputStream input = clientSocket.getInputStream();
+        
+        try (
+             // Obtiene la entrada y salida desde el socket para recibir datos del cliente   
+             InputStream input = clientSocket.getInputStream();
              OutputStream output = clientSocket.getOutputStream();
+             
+             // Permite leer y enviar datos a través de la entrada y salida
              ObjectInputStream objectInput = new ObjectInputStream(input);
              ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
+            
+            // Se obtiene la dirección IP y la respuesta del cliente
             String clientIP = clientSocket.getInetAddress().getHostAddress();
-            // Handle client requests
             String request = (String) objectInput.readObject();
+            
+            // Se maneja la solicitud según el tipo de operación
             switch (request) {
                 case "ADD" -> {
+                    
+                    // Se agrega el producto al almacén
                     Producto producto = (Producto) objectInput.readObject();
                     almacen.agregarProducto(producto);
                     CreadorLogs.log("ADD", clientIP, "Producto ID: " + producto.getId());
                 }
                 case "DELETE" -> {
+                    
+                    // Se elimina el producto por su ID
                     Producto producto = (Producto) objectInput.readObject();
                     int id=producto.getId();
                     almacen.eliminarProducto(id);
                     CreadorLogs.log("DELETE", clientIP, "Producto ID: " + id);
                 }
-                case "UPDATE" -> {    
+                case "UPDATE" -> { 
+                    
+                    // Se recibe el ID  y los nuevos datos del producto a actualizar
                     int idActualizar = Integer.parseInt((String) objectInput.readObject());
                     Producto nuevosDatos = (Producto) objectInput.readObject();
+                    
+                    // Se actualiza el producto en el almacén
                     almacen.actualizarProducto(
                             idActualizar,
                             nuevosDatos.getNombre(),
@@ -77,15 +93,28 @@ public class ControlCliente extends Thread {
                     );
                     CreadorLogs.log("UPDATE", clientIP, "Producto ID: " + idActualizar);
                 }
+                case "SEARCH" -> {
+                    
+                    // Se busca el producto en el almacén
+                    Producto producto = (Producto) objectInput.readObject();
+                    String producto_encontrado = almacen.buscar(producto);
+                    System.out.println(producto_encontrado);
+                    
+                    // Se envía el resultado al cliente
+                    objectOutput.writeObject(producto_encontrado);
+                    CreadorLogs.log("SEARCH", clientIP, "Producto ID: " + producto.getId());
+                }
+
                 case "CSV" -> {
+                    // Se envía el inventario al cliente en formato CSV
                     String inventario= almacen.generarInventario();
                     System.out.println(inventario);
                     objectOutput.writeObject(inventario);
-                    CreadorLogs.log("UPDATE", clientIP,"Inventario Generado");
+                    CreadorLogs.log("CSV", clientIP,"Inventario Generado");
                 }
             }
 
-            // Send response back to client
+            // Se envía una confirmación de operación exitosa al cliente
             objectOutput.writeObject("Operacion exitosa");
 
         } catch (IOException | ClassNotFoundException e) {

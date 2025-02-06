@@ -213,40 +213,48 @@ public class Agregar extends javax.swing.JDialog {
      * 
      */
     private void crearProducto() {
-    try {
-        
-        if (Txtid.getText().trim().isEmpty() ||
-            TxtNombre.getText().trim().isEmpty() ||
-            TxtDescripcion.getText().trim().isEmpty() ||
-            TxtPrecio.getText().trim().isEmpty() ||
-            TxtCantidad.getText().trim().isEmpty()) {
+        try {
             
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            // Verifica si alguno de los campos de texto está vacío antes de continuar.
+            if (Txtid.getText().trim().isEmpty() ||
+                TxtNombre.getText().trim().isEmpty() ||
+                TxtDescripcion.getText().trim().isEmpty() ||
+                TxtPrecio.getText().trim().isEmpty() ||
+                TxtCantidad.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+             // Convierte los valores de los campos de texto en sus respectivos tipos de datos.
             int id = Integer.parseInt(Txtid.getText().trim());
             String nombre = TxtNombre.getText().trim();
             String descripcion = TxtDescripcion.getText().trim();
             double precio = Double.parseDouble(TxtPrecio.getText().trim());
             int cantidad = Integer.parseInt(TxtCantidad.getText().trim());
-            
+
             Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
-            String respuesta = cliente.sendOperation("ADD", p);
             
+            // Envía la operación "ADD" al servidor a través del cliente.
+            String respuesta = cliente.sendOperation("ADD", p);
+
+            // Verifica si la respuesta del servidor indica un error.
             if (respuesta.startsWith("Error")) {
                 JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
+            } 
+            else {
                 JOptionPane.showMessageDialog(this, "Producto agregado en el servidor.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 borrar();
             }
-        borrar();
+            borrar();
 
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores numéricos.", "ERROR", JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
+            // Captura errores al convertir ID, Precio o Cantidad si no son valores numéricos.
+            JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores numéricos.", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
 
     /**
      * Borra los campos de entrada del formulario.

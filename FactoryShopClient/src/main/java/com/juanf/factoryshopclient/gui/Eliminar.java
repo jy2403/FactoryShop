@@ -142,19 +142,22 @@ public class Eliminar extends javax.swing.JDialog {
      * Valida que el ID sea un número entero y muestra mensajes de error en caso de datos inválidos.
      */
     private void eliminarProducto() {
-            try {
-                int id = Integer.parseInt(Txtid.getText().trim());
-                String respuesta = cliente.sendOperation("DELETE", new Producto(id, "", "", 0, 0));
+        try {
+            
+            // Obtiene el ID del producto desde el campo de texto y lo convierte a entero.
+            int id = Integer.parseInt(Txtid.getText().trim());
+            String respuesta = cliente.sendOperation("DELETE", new Producto(id, "", "", 0, 0));
 
-                if (respuesta.startsWith("Error")) {
-                    JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Producto eliminado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    Txtid.setText("");
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "ID inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            if (respuesta.startsWith("Error")) {
+                JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
+            } 
+            else {
+                JOptionPane.showMessageDialog(this, "Producto eliminado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                Txtid.setText("");
             }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID inválido.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
 
 }

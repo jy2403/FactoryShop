@@ -38,11 +38,17 @@ public class TCPServer {
      */
     public void start() {
         try {
+            
+            // Obtiene la fábrica de sockets SSL predeterminada.
             SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            
+            // Crea un socket de servidor SSL en el puerto especificado.
             SSLServerSocket serverSocket = (SSLServerSocket) ssf.createServerSocket(port);
             System.out.println("SSL Server started on port " + port);
             
             while (true) {
+                
+                // Espera y acepta una conexión de cliente.
                 SSLSocket clientSocket = (SSLSocket) serverSocket.accept();
                 new ControlCliente(clientSocket, almacen).start();
             }

@@ -28,39 +28,48 @@ public class Reader {
      * @return Una lista de objetos leídos desde el archivo.
      * @throws IOException Si ocurre un error al leer o crear el archivo.
      */
-    public static ArrayList leerProductos(String file) throws IOException {
+    public static ArrayList<Producto> leerProductos(String file) throws IOException {
         ArrayList<Producto> productos = new ArrayList<>();
         Path path = Paths.get(file);
-        
+
+        // Verifica si el archivo no existe,sino crea uno
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
             Files.createFile(path);
             return productos; // Retorna lista vacía
         }
-
+        
+        // Se abre el archivo en modo lectura con codificación UTF-8
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
             while ((line = br.readLine()) != null) {
                 try {
-                    String[] campos = line.split("|");
+                    String[] campos = line.split("\\|");  // Corrección aquí
+
+                    // Se verifica que la línea tenga exactamente 5 campos esperados
                     if (campos.length != 5) {
-                        System.err.println("Línea vacia");
+                        System.err.println("Formato incorrecto en la línea: " + line);
                         continue;
                     }
+                    
+                    // Se convierten los valores de texto a los tipos adecuados
                     int id = Integer.parseInt(campos[0].trim());
                     String nombre = campos[1].trim();
                     String descripcion = campos[2].trim();
-                    double precio = Double.parseDouble(campos[3].trim());
+                    // Asegurar formato decimal
+                    double precio = Double.parseDouble(campos[3].trim().replace(",", ".")); 
                     int cantidad = Integer.parseInt(campos[4].trim());
 
+                    // Se crea un objeto Producto y se agrega a la lista
                     Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
                     productos.add(producto);
                 } catch (NumberFormatException e) {
-                    System.err.println("Error al convertir número en la línea: " + line);
+                    System.err.println("Error al convertir un número en la línea: " + line);
                 }
             }
         }
 
         return productos;
     }
+
 }

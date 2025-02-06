@@ -32,8 +32,12 @@ public class Writer {
      */
     public static void guardarProductos(String file, ArrayList<Producto> productos) throws IOException {
         Path path = Paths.get(file);
+        
+        // Se abre un BufferedWriter para escribir en el archivo con codificación UTF-8
         try (BufferedWriter bw = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             for (Producto p : productos) {
+                
+                // Se crea una línea con los atributos del producto separados por "|"
                 String linea = String.format("%d|%s|%s|%.2f|%d",
                         p.getId(), p.getNombre(), p.getDescripcion(), p.getPrecio(), p.getCantidad());
                 bw.write(linea);

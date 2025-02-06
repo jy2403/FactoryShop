@@ -26,9 +26,11 @@ public class CreadorLogs {
      * @param detalle Información adicional sobre la operación (por ejemplo, detalles de la transacción).
      */
     public static void log(String operacion, String ipCliente, String detalle) {
+        
         String registro = String.format("[%s] %s - IP: %s - %s",
                 LocalDateTime.now(), operacion, ipCliente, detalle);
         
+        // Escribe el registro en un archivo CSV, agregando una nueva línea al final.
         try (FileWriter fw = new FileWriter("logs.csv", true)) {
             fw.write(registro + "\n");
         } catch (IOException e) {

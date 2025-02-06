@@ -36,10 +36,13 @@ public class FactoryShop {
      * Si no se encuentra el archivo de productos, se crea uno nuevo vacío.
      */
     public FactoryShop() {
-            Path path = Paths.get("data/productos");
+        
+        // Define la ruta del archivo de productos en una carpeta de datos.
+        Path path = Paths.get("data/productos");
         System.out.println("Buscando el archivo en: " + path.toAbsolutePath());
+        
         try {
-            // Ruta relativa directa: "data/productos"
+            // Intenta leer los productos desde el archivo especificado.
             ArrayList<Producto> productosLeidos = Reader.leerProductos("data/productos");
             productos.addAll(productosLeidos);
         } catch (IOException ex) {
@@ -98,11 +101,28 @@ public class FactoryShop {
      */
     public boolean actualizarProducto(int id, String nombre, String descripcion, double precio, int cantidad) {
         for (Producto p : productos) {
-            if (p.getId() == id) {
-                p.setNombre(nombre);
-                p.setDescripcion(descripcion);
-                p.setPrecio(precio);
-                p.setCantidad(cantidad);
+            if (p.getId()== id) {
+                
+                // Si el nombre no está vacío, actualiza el nombre del producto.
+                if (!nombre.isEmpty()){
+                    p.setNombre(nombre);
+                }
+                
+                // Si la descripción no está vacía, actualiza la descripción del producto.
+                if(!descripcion.isEmpty()){
+                    p.setDescripcion(descripcion);
+                }
+                
+                // Si el precio es mayor que 0, actualiza el precio del producto.
+                if(precio>0){
+                    p.setPrecio(precio);
+                }
+                
+                // Si la cantidad es mayor o igual a 0, actualiza la cantidad del producto.
+                if(cantidad>=0){
+                    p.setCantidad(cantidad);
+                }
+                
                 guardarCambios();
                 return true;
             }
@@ -131,6 +151,21 @@ public class FactoryShop {
             productos.forEach(System.out::println);
         }
     }
+    /**
+     * Busca por nombre el producto dentro del inventario. Si no se encuentra,
+     * no retorna ningun producto
+     * @param producto
+     * @return El producto
+     */
+    public String buscar(Producto producto){
+    for (Producto p : productos){
+        if (p.getNombre().equals(producto.getNombre())){
+            return p.getId() + "," + p.getDescripcion() + "," + p.getPrecio() + "," + p.getCantidad();
+        }
+    }
+    return "NOT_FOUND";  // Enviar un mensaje en lugar de null
+}
+
     /**
      * Genera un inventario en formato CSV a partir de la lista de productos.
      * 

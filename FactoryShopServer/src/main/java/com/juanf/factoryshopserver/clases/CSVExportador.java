@@ -25,7 +25,10 @@ public class CSVExportador {
      * @return Una cadena de texto en formato CSV representando el inventario.
      */
     public static String generarCSVInventario(ArrayList<Producto> productos) {
+        
+        // Utiliza un StringWriter para construir la cadena de inventario en formato CSV personalizado.
         StringWriter sw = new StringWriter();
+        
         for (Producto p : productos) {
             sw.write(String.format("%d|%s|%s|%.2f|%d;",
                     p.getId(), p.getNombre(), p.getDescripcion(), p.getPrecio(), p.getCantidad()));

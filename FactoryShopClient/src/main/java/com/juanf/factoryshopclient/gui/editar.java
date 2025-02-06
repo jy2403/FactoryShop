@@ -208,32 +208,37 @@ public class Editar extends javax.swing.JDialog {
     private void editarProducto() {
         try {
 
-            if (Txtid.getText().trim().isEmpty() ||
-                TxtNombre.getText().trim().isEmpty() ||
-                TxtDescripcion.getText().trim().isEmpty() ||
-                TxtPrecio.getText().trim().isEmpty() ||
-                TxtCantidad.getText().trim().isEmpty()) {
+            // Verifica que el campo ID no esté vacío y que al menos un dato a modificar esté presente.
+            if (Txtid.getText().trim().isEmpty() ||( 
+                TxtNombre.getText().trim().isEmpty() &&
+                TxtDescripcion.getText().trim().isEmpty() &&
+                TxtPrecio.getText().trim().isEmpty() &&
+                TxtCantidad.getText().trim().isEmpty())) {
 
-                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "EL campo id es obligatorio o falta un dato a cambiar.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
+            // Obtiene y convierte los valores ingresados en los campos de texto.
             int id = Integer.parseInt(Txtid.getText().trim());
             String nombre = TxtNombre.getText().trim();
             String descripcion = TxtDescripcion.getText().trim();
             double precio = Double.parseDouble(TxtPrecio.getText().trim());
             int cantidad = Integer.parseInt(TxtCantidad.getText().trim());
 
-            if (id < 0 || precio < 0 || cantidad < 0) {
+            // Valida que los valores numéricos sean positivos.
+            if (id < 0 || precio < 0 || cantidad < -1) {
                 JOptionPane.showMessageDialog(this, "ID, Precio y Cantidad deben ser valores positivos.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             Producto p = new Producto(id, nombre, descripcion, precio, cantidad);
             String respuesta = cliente.sendOperation("UPDATE", p);
+            
                 if (respuesta.startsWith("Error")) {
                     JOptionPane.showMessageDialog(this, respuesta, "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
+                } 
+                else {
                     JOptionPane.showMessageDialog(this, "Producto actualizado en el servidor.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     borrar();
                 }
